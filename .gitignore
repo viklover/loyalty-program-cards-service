@@ -3,6 +3,10 @@
 
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
+gradlew
+gradlew.bat
 
 build/
 out/
+
+src/main/resources/application-dev.yml

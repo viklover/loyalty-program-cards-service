@@ -1,0 +1,13 @@
+server:
+  port: 80
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://${POSTGRES_URL}/?currentSchema=cards
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  flyway:
+    url: jdbc:postgresql://${POSTGRES_URL}/?currentSchema=cards
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
