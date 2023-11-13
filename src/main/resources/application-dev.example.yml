@@ -1,0 +1,13 @@
+server:
+  port: 80
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/loyalty-program?currentSchema=cards
+    username:
+    password:
+  flyway:
+    url: jdbc:postgresql://localhost:5432/loyalty-program?currentSchema=cards
+    user:
+    password:
+    driver-class-name: org.postgresql.Driver
