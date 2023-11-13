@@ -3,11 +3,11 @@ server:
 
 spring:
   r2dbc:
-    url: r2dbc:postgresql://${DB_URL}/?currentSchema=cards
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: r2dbc:postgresql://${POSTGRES_URL}/?currentSchema=cards
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   flyway:
-    url: jdbc:postgresql://${DB_URL}/?currentSchema=cards
-    user: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_URL}/?currentSchema=cards
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
