@@ -49,7 +49,7 @@ tasks.withType<KotlinCompile> {
 
 openApiGenerate {
     generatorName.set("kotlin-spring")
-    inputSpec.set("$rootDir/src/main/resources/contracts/endpoints.yaml")
+    inputSpec.set("$rootDir/src/main/resources/contracts/api-v1.yaml")
     outputDir.set(generatedSourcesPath)
     apiPackage.set("$group.$artifactId.name.contracts.controller")
     modelPackage.set("$groupId.$artifactId.contracts.models")
