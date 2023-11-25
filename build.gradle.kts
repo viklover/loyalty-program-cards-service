@@ -29,6 +29,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework:spring-jdbc")
     implementation("org.openapitools:openapi-generator-gradle-plugin:6.6.0")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -50,7 +51,6 @@ openApiGenerate {
     inputSpec.set("$rootDir/src/main/resources/contracts/endpoints.yaml")
     outputDir.set(generatedSourcesPath)
     apiPackage.set("ru.viklover.cards.contracts.controller")
-    invokerPackage.set("ru.viklover.cards.contracts")
     modelPackage.set("ru.viklover.cards.contracts.models")
     packageName.set("ru.viklover.cards.contracts")
     configOptions.set(
@@ -60,7 +60,8 @@ openApiGenerate {
             "useSwaggerUI" to "false",
             "interfaceOnly" to "false",
             "annotationLibrary" to "none",
-            "packageName" to "ru.viklover.cards.contracts"
+            "packageName" to "ru.viklover.cards.contracts",
+            "documentationProvider" to "none"
         )
     )
 }
