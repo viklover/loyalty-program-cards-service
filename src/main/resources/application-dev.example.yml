@@ -4,10 +4,10 @@ server:
 spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/loyalty-program?currentSchema=cards
-    username:
-    password:
+    username: postgres
+    password: postgres
   flyway:
     url: jdbc:postgresql://localhost:5432/loyalty-program?currentSchema=cards
-    user:
-    password:
+    user: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
