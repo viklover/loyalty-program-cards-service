@@ -3,12 +3,8 @@ info:
   version: 0.0.1
   title: Cards Service
 servers:
-  - url: http://localhost
+  - url: http://localhost/api/v1
     description: local
-#  - url: https://dev.store.com
-#    description: development
-#  - url: https://stage.store.com
-#    description: stage
 
 paths:
   /cards:
@@ -32,18 +28,8 @@ paths:
         - "Cards"
       summary: "Release a card to customer"
       parameters:
-        - name: customerId
-          in: path
-          description: "Customer identifier"
-          required: true
-          schema:
-            type: integer
-        - name: cardId
-          in: path
-          description: "Card identifier"
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/customerId'
+        - $ref: '#/components/parameters/cardId'
       responses:
         "200":
           description: "Card has been released"
@@ -57,12 +43,7 @@ paths:
         - "Cards"
       summary: "Card blocking by the customer or user"
       parameters:
-        - name: cardId
-          in: path
-          description: "Card identifier"
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/cardId'
       responses:
         "200":
           description: "Card has been blocked"
@@ -77,16 +58,8 @@ paths:
         - "Cards"
       summary: "Getting a list of all cards"
       parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         "200":
           description: "Successful"
@@ -97,28 +70,47 @@ paths:
         - "Cards"
       summary: "Getting a list of free cards"
       parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
         "200":
           description: "Successful"
 
-#components:
-#  schemas:
-#    generateCards:
-#      type: object
-#      required:
-#        -
-#      properties:
-#        number:
-#          type: integer
-#          example: "100"
-#          required: true
+  /healthcheck:
+    get:
+      tags:
+        - "Service"
+      summary: "Check service functionality"
+      responses:
+        "200":
+          description: "I'm alive"
+
+components:
+  parameters:
+    customerId:
+      name: customerId
+      in: path
+      description: "Customer identifier"
+      required: true
+      schema:
+        type: integer
+    cardId:
+      name: cardId
+      in: path
+      description: "Card identifier"
+      required: true
+      schema:
+        type: integer
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+    offset:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+
