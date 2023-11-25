@@ -36,6 +36,9 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
 }
 
+val artifactId = rootProject.name
+val generatedSourcesPath = "${layout.buildDirectory.get()}/generated"
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
@@ -44,23 +47,21 @@ tasks.withType<KotlinCompile> {
     dependsOn("openApiGenerate")
 }
 
-val generatedSourcesPath = "$buildDir/generated"
-
 openApiGenerate {
     generatorName.set("kotlin-spring")
     inputSpec.set("$rootDir/src/main/resources/contracts/endpoints.yaml")
     outputDir.set(generatedSourcesPath)
-    apiPackage.set("ru.viklover.cards.contracts.controller")
-    modelPackage.set("ru.viklover.cards.contracts.models")
-    packageName.set("ru.viklover.cards.contracts")
+    apiPackage.set("$group.$artifactId.name.contracts.controller")
+    modelPackage.set("$groupId.$artifactId.contracts.models")
+    packageName.set("$groupId.$artifactId.contracts")
     configOptions.set(
         mapOf(
             "reactive" to "true",
             "useSpringBoot3" to "true",
             "useSwaggerUI" to "false",
-            "interfaceOnly" to "false",
+            "interfaceOnly" to "true",
             "annotationLibrary" to "none",
-            "packageName" to "ru.viklover.cards.contracts",
+            "packageName" to "$groupId.$artifactId.contracts",
             "documentationProvider" to "none"
         )
     )
