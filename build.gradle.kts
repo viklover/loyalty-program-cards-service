@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.1.5"
     id("io.spring.dependency-management") version "1.1.3"
-    id("org.openapi.generator") version "6.6.0"
+    id("org.openapi.generator") version "7.1.0"
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
 }
@@ -28,7 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework:spring-jdbc")
-    implementation("org.openapitools:openapi-generator-gradle-plugin:6.6.0")
+    implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
@@ -51,17 +51,18 @@ openApiGenerate {
     generatorName.set("kotlin-spring")
     inputSpec.set("$rootDir/src/main/resources/contracts/api-v1.yaml")
     outputDir.set(generatedSourcesPath)
-    apiPackage.set("$group.$artifactId.name.contracts.controller")
-    modelPackage.set("$groupId.$artifactId.contracts.models")
-    packageName.set("$groupId.$artifactId.contracts")
+    apiPackage.set("$group.$artifactId.contracts.v1.controller")
+    modelPackage.set("$group.$artifactId.contracts.v1.models")
+    packageName.set("$group.$artifactId.contracts.v1")
     configOptions.set(
         mapOf(
             "reactive" to "true",
             "useSpringBoot3" to "true",
             "useSwaggerUI" to "false",
             "interfaceOnly" to "true",
+            "apiSuffix" to "V1",
             "annotationLibrary" to "none",
-            "packageName" to "$groupId.$artifactId.contracts",
+            "packageName" to "$group.$artifactId.contracts",
             "documentationProvider" to "none"
         )
     )
