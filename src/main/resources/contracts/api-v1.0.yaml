@@ -12,12 +12,15 @@ paths:
       tags:
         - "Cards"
       summary: "Generate a range of cards"
+      operationId: generateCards
       parameters:
         - name: range
           in: query
           description: "Range of cards to be created"
+          required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: "Task has been created"
@@ -27,6 +30,7 @@ paths:
       tags:
         - "Cards"
       summary: "Release a card to customer"
+      operationId: releaseCard
       parameters:
         - $ref: '#/components/parameters/customerId'
         - $ref: '#/components/parameters/cardId'
@@ -42,6 +46,7 @@ paths:
       tags:
         - "Cards"
       summary: "Card blocking by the customer or user"
+      operationId: blockCard
       parameters:
         - $ref: '#/components/parameters/cardId'
       responses:
@@ -57,60 +62,108 @@ paths:
       tags:
         - "Cards"
       summary: "Getting a list of all cards"
+      operationId: getCards
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
       responses:
         "200":
           description: "Successful"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
 
   /cards/list/free:
     get:
       tags:
         - "Cards"
       summary: "Getting a list of free cards"
+      operationId: getFreeCards
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
       responses:
         "200":
           description: "Successful"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FreeCard'
 
   /healthcheck:
     get:
       tags:
         - "Service"
       summary: "Check service functionality"
+      operationId: healthCheck
       responses:
         "200":
           description: "I'm alive"
 
 components:
+  schemas:
+    Card:
+      type: object
+      required:
+        - id
+        - number
+        - isOwned
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 9
+        number:
+          type: string
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        isOwned:
+          type: boolean
+          example: true
+    FreeCard:
+      type: object
+      required:
+        - id
+        - number
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 9
+        number:
+          type: string
+          example: "550e8400-e29b-41d4-a716-446655440000"
   parameters:
-    customerId:
-      name: customerId
-      in: path
-      description: "Customer identifier"
-      required: true
-      schema:
-        type: integer
-    cardId:
-      name: cardId
-      in: path
-      description: "Card identifier"
-      required: true
-      schema:
-        type: integer
-    limit:
-      name: limit
-      in: query
-      required: false
-      schema:
-        type: integer
-    offset:
-      name: offset
-      in: query
-      required: false
-      schema:
-        type: integer
+      customerId:
+        name: customerId
+        in: path
+        description: "Customer identifier"
+        required: true
+        schema:
+          type: integer
+          format: int64
+      cardId:
+        name: cardId
+        in: path
+        description: "Card identifier"
+        required: true
+        schema:
+          type: integer
+          format: int64
+      limit:
+        name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      offset:
+        name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
 
