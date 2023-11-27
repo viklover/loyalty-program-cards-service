@@ -20,7 +20,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64
+            format: int32
       responses:
         "200":
           description: "Task has been created"
@@ -74,7 +74,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Card'
+                  $ref: '#/components/schemas/CardDto'
 
   /cards/list/free:
     get:
@@ -93,7 +93,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FreeCard'
+                  $ref: '#/components/schemas/FreeCardDto'
 
   /healthcheck:
     get:
@@ -107,7 +107,7 @@ paths:
 
 components:
   schemas:
-    Card:
+    CardDto:
       type: object
       required:
         - id
@@ -124,7 +124,7 @@ components:
         isOwned:
           type: boolean
           example: true
-    FreeCard:
+    FreeCardDto:
       type: object
       required:
         - id

@@ -1,15 +1,17 @@
 package ru.viklover.cards.api.v1.service
 
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 import org.springframework.stereotype.Service
 
+import ru.viklover.cards.contracts.v1.models.CardDto
+import ru.viklover.cards.contracts.v1.models.FreeCardDto
+
+import ru.viklover.cards.repository.Card
 import ru.viklover.cards.repository.CardRepository
 import ru.viklover.cards.exception.ItemNotFoundException
-
-import ru.viklover.cards.contracts.v1.models.Card;
-import ru.viklover.cards.contracts.v1.models.FreeCard;
 
 @Service
 class CardServiceImpl(
@@ -17,17 +19,23 @@ class CardServiceImpl(
 ) : CardService {
 
     suspend fun findById(id: Long) =
-        cardRepository.findById(id) ?: throw ItemNotFoundException.of(Card::class, id)
+        cardRepository.findById(id) ?: throw ItemNotFoundException.of(CardDto::class, id)
 
-    override fun findFreeCards(limit: Int?, offset: Int?): Flow<FreeCard> {
-        return cardRepository.findByOwned(isOwned = false, limit, offset).map {
-            FreeCard(id = it.id, number = it.number)
+    override suspend fun generateCards(range: Int) = coroutineScope {
+        (0..range).forEach { _ ->
+            cardRepository.save(Card.generate())
         }
     }
 
-    override fun findAll(limit: Int?, offset: Int?): Flow<Card> {
+    override fun findFreeCards(limit: Int?, offset: Int?): Flow<FreeCardDto> {
+        return cardRepository.findByOwned(isOwned = false, limit, offset).map {
+            FreeCardDto(id = it.id(), number = it.number)
+        }
+    }
+
+    override fun findAll(limit: Int?, offset: Int?): Flow<CardDto> {
         return cardRepository.findAllBy(limit, offset).map {
-            Card(id = it.id, number = it.number, isOwned = it.isOwned)
+            CardDto(id = it.id(), number = it.number, isOwned = it.isOwned)
         }
     }
 }
