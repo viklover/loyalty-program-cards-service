@@ -29,7 +29,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework:spring-jdbc")
-    implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0")
+    implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0") {
+        exclude(group = "org.slf4j", module = "slf4j-simple")
+    }
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
