@@ -8,6 +8,8 @@ services:
     build:
       context: .
     environment: *env
+    ports:
+      - 8000:80
     depends_on:
       database:
         condition: service_healthy
