@@ -37,75 +37,57 @@ dependencies {
     runtimeOnly("org.postgresql:r2dbc-postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+
+}
+
+tasks.bootBuildImage {
+    builder.set("paketobuildpacks/builder-jammy-base:latest")
 }
 
 val projectPackage = "$group.${rootProject.name}"
 
 val generatedSourcesPath = "${layout.buildDirectory.get()}/generated"
 val contractsDirectoryPath = "$rootDir/src/main/resources/contracts"
-val contractTasks = apiContracts()
+
+val baseConfigOptions = mapOf(
+    "reactive" to "true",
+    "useSpringBoot3" to "true",
+    "useSwaggerUI" to "false",
+    "interfaceOnly" to "true",
+    "annotationLibrary" to "none",
+    "packageName" to "$projectPackage.contracts",
+    "documentationProvider" to "none",
+    "skipDefaultInterface" to "true"
+)
+
+openApiGenerate {
+    generatorName.set("kotlin-spring")
+    inputSpec.set("$rootDir/src/main/resources/contracts/base/base-api.yaml")
+    outputDir.set(generatedSourcesPath)
+    apiPackage.set("$projectPackage.contracts")
+    modelPackage.set("$projectPackage.contracts")
+    packageName.set("$projectPackage.contracts")
+    configOptions.set(baseConfigOptions)
+}
+
+tasks.create("openApiGenerateV1", GenerateTask::class) {
+    generatorName.set("kotlin-spring")
+    inputSpec.set("$rootDir/src/main/resources/contracts/api-v1.0.yaml")
+    outputDir.set(generatedSourcesPath)
+    apiPackage.set("$projectPackage.contracts.v1.controller")
+    modelPackage.set("$projectPackage.contracts.v1.models")
+    packageName.set("$projectPackage.contracts.v1")
+    configOptions.set(
+        baseConfigOptions.toMutableMap() + mapOf("apiSuffix" to "ControllerV1")
+    )
+}
+
+kotlin.sourceSets["main"].kotlin.srcDir("$generatedSourcesPath/src/main/kotlin")
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
         jvmTarget = "17"
     }
-    dependsOn(contractTasks)
-}
-
-
-kotlin.sourceSets["main"].kotlin.srcDir("$generatedSourcesPath/src/main/kotlin")
-
-// tasks.withType<Test> {
-//     useJUnitPlatform()
-// }
-
-tasks.bootBuildImage {
-    builder.set("paketobuildpacks/builder-jammy-base:latest")
-}
-
-/* GENERATE API CONTRACT TASKS */
-
-fun apiContracts(): List<String> {
-
-    val directory = file(contractsDirectoryPath)
-    val files = directory.listFiles() ?: throw StopExecutionException("Where's contracts?")
-
-    val pattern = Regex("api-v(\\d+\\.\\d+)\\.yaml")
-
-    return files.map { file ->
-
-        val matches = pattern.find(file.name) ?: throw StopExecutionException("Matches were not found")
-
-        val apiSuffix = matches.let {
-            val (major, minor) = it.groupValues[1].split('.')
-
-            if (minor == "0") "v$major" else "v${major}_${minor}"
-        }
-
-        val taskName = "generate${apiSuffix.uppercase()}"
-
-        tasks.create(taskName, GenerateTask::class) {
-            generatorName.set("kotlin-spring")
-            inputSpec.set("$rootDir/src/main/resources/contracts/${file.name}")
-            outputDir.set(generatedSourcesPath)
-            apiPackage.set("$projectPackage.contracts.$apiSuffix.controller")
-            modelPackage.set("$projectPackage.contracts.$apiSuffix.models")
-            packageName.set("$projectPackage.contracts.$apiSuffix")
-            configOptions.set(
-                mapOf(
-                    "reactive" to "true",
-                    "useSpringBoot3" to "true",
-                    "useSwaggerUI" to "false",
-                    "interfaceOnly" to "true",
-                    "apiSuffix" to "Controller${apiSuffix.uppercase()}",
-                    "annotationLibrary" to "none",
-                    "packageName" to "$projectPackage.contracts",
-                    "documentationProvider" to "none"
-                )
-            )
-        }
-
-        return@map taskName;
-    }
+    dependsOn("openApiGenerate", "openApiGenerateV1")
 }
