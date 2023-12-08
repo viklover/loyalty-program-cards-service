@@ -18,12 +18,14 @@ jobs:
           distribution: corretto
           java-version: 17
       - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.4
 
       - name: Install dependencies
-        run: ./gradlew build
+        run: gradle build
 
       - name: Lint
-        run: ./gradlew ktlintCheck
+        run: gradle ktlintCheck
 
       - name: Prettier check
-        run: ./gradlew ktfmtCheck
+        run: gradle ktfmtCheck
