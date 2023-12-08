@@ -20,9 +20,9 @@ import ru.viklover.cards.api.v1.exception.CardIsBlockedException
 import ru.viklover.cards.api.v1.exception.CardNotIssuedException
 
 @Service
-class CardServiceImpl(
+class CardsServiceImpl(
     private val cardRepository: CardRepository
-) : CardService {
+) : CardsService {
 
     private suspend fun findById(id: Long) =
         cardRepository.findById(id) ?: throw ItemNotFoundException.of(CardDto::class, id)

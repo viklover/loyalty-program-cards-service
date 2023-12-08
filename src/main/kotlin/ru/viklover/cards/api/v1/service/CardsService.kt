@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.viklover.cards.contracts.v1.models.CardDto
 import ru.viklover.cards.contracts.v1.models.FreeCardDto
 
-interface CardService {
+interface CardsService {
     suspend fun generateCardsAsync(range: Int)
     suspend fun releaseCard(cardId: Long, customerId: Long)
     suspend fun blockCard(cardId: Long)
