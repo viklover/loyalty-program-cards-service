@@ -6,7 +6,9 @@ import ru.viklover.cards.contracts.v1.models.CardDto
 import ru.viklover.cards.contracts.v1.models.FreeCardDto
 
 interface CardService {
-    suspend fun generateCards(range: Int)
-    fun findFreeCards(limit: Int?, offset: Int?): Flow<FreeCardDto>
+    suspend fun generateCardsAsync(range: Int)
+    suspend fun releaseCard(cardId: Long, customerId: Long)
+    suspend fun blockCard(cardId: Long)
     fun findAll(limit: Int?, offset: Int?): Flow<CardDto>
+    fun findFreeCards(limit: Int?, offset: Int?): Flow<FreeCardDto>
 }

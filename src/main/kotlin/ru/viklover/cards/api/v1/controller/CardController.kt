@@ -1,6 +1,5 @@
 package ru.viklover.cards.api.v1.controller
 
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 
 import org.springframework.http.HttpStatus
@@ -18,13 +17,18 @@ class CardController(
     private val cardService: CardService
 ) : CardsControllerV1 {
 
-    override suspend fun blockCard(cardId: Long): ResponseEntity<Unit> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    override suspend fun generateCards(range: Int): ResponseEntity<Unit> {
+        cardService.generateCardsAsync(range)
+        return ResponseEntity(HttpStatus.OK)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    override suspend fun generateCards(range: Int): ResponseEntity<Unit> {
-        GlobalScope.launch { cardService.generateCards(range) }
+    override suspend fun releaseCard(cardId: Long, customerId: Long): ResponseEntity<Unit> {
+        cardService.releaseCard(cardId, customerId)
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    override suspend fun blockCard(cardId: Long): ResponseEntity<Unit> {
+        cardService.blockCard(cardId)
         return ResponseEntity(HttpStatus.OK)
     }
 
@@ -34,9 +38,5 @@ class CardController(
 
     override fun getFreeCards(limit: Int?, offset: Int?): ResponseEntity<Flow<FreeCardDto>> {
         return ResponseEntity.ok(cardService.findFreeCards(limit, offset))
-    }
-
-    override suspend fun releaseCard(customerId: Long, cardId: Long): ResponseEntity<Unit> {
-        return ResponseEntity(HttpStatus.OK)
     }
 }

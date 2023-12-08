@@ -11,8 +11,14 @@ import kotlinx.coroutines.flow.Flow
 interface CardRepository : CoroutineCrudRepository<Card, Long> {
 
     @Query("select * from card limit :limit offset :offset")
-    fun findAllBy(limit: Int?, offset: Int?): Flow<Card>;
+    fun findAllBy(limit: Int?, offset: Int?): Flow<Card>
 
     @Query("select * from card where is_owned = :isOwned limit :limit offset :offset")
-    fun findByOwned(isOwned: Boolean, limit: Int?, offset: Int?): Flow<Card>;
+    fun findByOwned(isOwned: Boolean, limit: Int?, offset: Int?): Flow<Card>
+
+    @Query("update card set customer_id=:customerId, is_owned=true, released_at=now() where id=:cardId")
+    suspend fun releaseCard(cardId: Long, customerId: Long)
+
+    @Query("update card set is_blocked=true, blocked_at=now() where id=:cardId")
+    suspend fun blockCard(cardId: Long)
 }

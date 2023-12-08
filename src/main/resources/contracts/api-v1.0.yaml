@@ -3,7 +3,7 @@ info:
   version: 0.0.1
   title: Cards Service
 servers:
-  - url: http://localhost/api/v1
+  - url: http://localhost:8000/api/v1
     description: local
 
 paths:
@@ -17,6 +17,7 @@ paths:
         - name: range
           in: query
           description: "Range of cards to be created"
+          example: 50
           required: true
           schema:
             type: integer
@@ -25,22 +26,24 @@ paths:
         "200":
           description: "Task has been created"
 
-  /cards/release/{customerId}/{cardId}:
+  /cards/release/{cardId}/{customerId}:
     post:
       tags:
         - "Cards"
       summary: "Release a card to customer"
       operationId: releaseCard
       parameters:
-        - $ref: '#/components/parameters/customerId'
         - $ref: '#/components/parameters/cardId'
+        - $ref: '#/components/parameters/customerId'
       responses:
         "200":
           description: "Card has been released"
-        "400":
-          description: "Invalid customerId or cardId parameters"
         "404":
-          description: "Card or customer not found"
+          description: "Card not found"
+        "406":
+          description: "Card is already owned by another customer"
+        "412":
+          description: "Card is blocked now"
   /cards/block/{cardId}:
     post:
       tags:
@@ -52,10 +55,12 @@ paths:
       responses:
         "200":
           description: "Card has been blocked"
-        "400":
-          description: "Invalid cardId parameter"
         "404":
           description: "Card not found"
+        "406":
+          description: "Card is already blocked now"
+        "425":
+          description: "Impossible to block unreleased card"
 
   /cards/list:
     get:
@@ -95,16 +100,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/FreeCardDto'
 
-  /healthcheck:
-    get:
-      tags:
-        - "Service"
-      summary: "Check service functionality"
-      operationId: healthCheck
-      responses:
-        "200":
-          description: "I'm alive"
-
 components:
   schemas:
     CardDto:
@@ -112,18 +107,42 @@ components:
       required:
         - id
         - number
+        - createdAt
+        - releasedAt
+        - blockedAt
         - isOwned
+        - isBlocked
+        - customerId
       properties:
         id:
           type: integer
           format: int64
-          example: 9
+          example: 12
         number:
           type: string
           example: "550e8400-e29b-41d4-a716-446655440000"
         isOwned:
           type: boolean
           example: true
+        isBlocked:
+          type: boolean
+          example: true
+        customerId:
+          type: integer
+          format: int64
+          example: 6
+          nullable: true
+        createdAt:
+          type: string
+          example: 2023-12-08 12:30:06.292803
+        releasedAt:
+          type: string
+          example: 2023-12-08 12:56:06.765695
+          nullable: true
+        blockedAt:
+          type: string
+          example: 2023-12-08 13:02:12.512280
+          nullable: true
     FreeCardDto:
       type: object
       required:
@@ -137,11 +156,15 @@ components:
         number:
           type: string
           example: "550e8400-e29b-41d4-a716-446655440000"
+        createdAt:
+          type: string
+          example: 2023-12-08 12:30:06.292803
   parameters:
       customerId:
         name: customerId
         in: path
         description: "Customer identifier"
+        example: 6
         required: true
         schema:
           type: integer
@@ -150,6 +173,7 @@ components:
         name: cardId
         in: path
         description: "Card identifier"
+        example: 12
         required: true
         schema:
           type: integer
@@ -158,12 +182,14 @@ components:
         name: limit
         in: query
         required: false
+        example: 50
         schema:
           type: integer
       offset:
         name: offset
         in: query
         required: false
+        example: 0
         schema:
           type: integer
 
