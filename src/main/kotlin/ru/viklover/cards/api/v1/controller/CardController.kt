@@ -33,7 +33,7 @@ class CardController(
     }
 
     override fun getCards(limit: Int?, offset: Int?): ResponseEntity<Flow<CardDto>> {
-        return ResponseEntity.ok(cardService.findAll(limit, offset));
+        return ResponseEntity.ok(cardService.findAll(limit, offset))
     }
 
     override fun getFreeCards(limit: Int?, offset: Int?): ResponseEntity<Flow<FreeCardDto>> {

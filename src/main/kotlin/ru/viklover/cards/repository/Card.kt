@@ -21,7 +21,7 @@ class Card(
     private var _id: Long? = null
 
     @Column("created_at")
-    private var _createdAt: LocalDateTime? = null;
+    private var _createdAt: LocalDateTime? = null
 
     val id
         get() = checkNotNull(_id)

@@ -48,7 +48,7 @@ class CardServiceImpl(
             throw CardIsBlockedException(cardId)
         }
 
-        cardRepository.releaseCard(cardId, customerId);
+        cardRepository.releaseCard(cardId, customerId)
     }
 
     override suspend fun blockCard(cardId: Long) {
