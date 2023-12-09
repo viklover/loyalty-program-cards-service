@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 @Repository
 interface CardRepository : CoroutineCrudRepository<Card, Long> {
 
+    @Query("insert into card default values")
+    suspend fun createCard()
+
     @Query("select * from card limit :limit offset :offset")
     fun findAllBy(limit: Int?, offset: Int?): Flow<Card>
 

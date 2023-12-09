@@ -25,13 +25,13 @@ class CardsServiceImpl(
 ) : CardsService {
 
     private suspend fun findById(id: Long) =
-        cardRepository.findById(id) ?: throw ItemNotFoundException.of(CardDto::class, id)
+        cardRepository.findById(id) ?: throw ItemNotFoundException.of(Card::class, id)
 
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun generateCardsAsync(range: Int) {
         GlobalScope.launch {
-            (0..range).forEach { _ ->
-                cardRepository.save(Card.generate())
+            (1..range).forEach { _ ->
+                cardRepository.createCard()
             }
         }
     }
