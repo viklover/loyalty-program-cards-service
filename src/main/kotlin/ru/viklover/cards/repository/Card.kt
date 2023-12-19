@@ -10,8 +10,7 @@ class Card(
     @Id
     val id: Long,
     val number: String,
-    var isOwned: Boolean,
-    var isBlocked: Boolean,
+    var status: CardStatus,
     var customerId: Long? = null,
     val createdAt: LocalDateTime,
     val releasedAt: LocalDateTime? = null,

@@ -110,8 +110,7 @@ components:
         - createdAt
         - releasedAt
         - blockedAt
-        - isOwned
-        - isBlocked
+        - status
         - customerId
       properties:
         id:
@@ -121,12 +120,9 @@ components:
         number:
           type: string
           example: "550e8400-e29b-41d4-a716-446655440000"
-        isOwned:
-          type: boolean
-          example: true
-        isBlocked:
-          type: boolean
-          example: true
+        status:
+          type: string
+          example: CREATED
         customerId:
           type: integer
           format: int64
@@ -148,6 +144,7 @@ components:
       required:
         - id
         - number
+        - createdAt
       properties:
         id:
           type: integer

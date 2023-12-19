@@ -18,6 +18,7 @@ import ru.viklover.cards.exception.ItemNotFoundException
 import ru.viklover.cards.api.v1.exception.CardHasOwnerException
 import ru.viklover.cards.api.v1.exception.CardIsBlockedException
 import ru.viklover.cards.api.v1.exception.CardNotIssuedException
+import ru.viklover.cards.repository.CardStatus
 
 @Service
 class CardsServiceImpl(
@@ -37,37 +38,31 @@ class CardsServiceImpl(
     }
 
     override suspend fun releaseCard(cardId: Long, customerId: Long) {
-
         val card = findById(cardId)
 
-        if (card.isOwned) {
-            throw CardHasOwnerException(cardId)
+        when (card.status) {
+            CardStatus.RELEASED -> throw CardHasOwnerException(cardId)
+            CardStatus.BLOCKED -> throw CardIsBlockedException(cardId)
+            else -> {
+                cardRepository.releaseCard(cardId, customerId)
+            }
         }
-
-        if (card.isBlocked) {
-            throw CardIsBlockedException(cardId)
-        }
-
-        cardRepository.releaseCard(cardId, customerId)
     }
 
     override suspend fun blockCard(cardId: Long) {
-
         val card = findById(cardId)
 
-        if (!card.isOwned) {
-            throw CardNotIssuedException(cardId)
+        when (card.status) {
+            CardStatus.CREATED -> throw CardNotIssuedException(cardId)
+            CardStatus.BLOCKED -> throw CardIsBlockedException(cardId)
+            else -> {
+                cardRepository.blockCard(cardId)
+            }
         }
-
-        if (card.isBlocked) {
-            throw CardIsBlockedException(cardId)
-        }
-
-        cardRepository.blockCard(cardId)
     }
 
     override fun findFreeCards(limit: Int?, offset: Int?): Flow<FreeCardDto> {
-        return cardRepository.findByOwned(isOwned = false, limit, offset).map {
+        return cardRepository.findByStatus(status = CardStatus.CREATED, limit, offset).map {
             FreeCardDto(id = it.id, number = it.number, createdAt = it.createdAt.toString())
         }
     }
@@ -81,8 +76,7 @@ class CardsServiceImpl(
                 releasedAt = it.releasedAt?.toString(),
                 blockedAt = it.blockedAt?.toString(),
                 customerId = it.customerId,
-                isOwned = it.isOwned,
-                isBlocked = it.isBlocked
+                status = it.status.toString()
             )
         }
     }

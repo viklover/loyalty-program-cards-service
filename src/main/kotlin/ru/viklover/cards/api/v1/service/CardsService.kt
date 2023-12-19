@@ -9,6 +9,6 @@ interface CardsService {
     suspend fun generateCardsAsync(range: Int)
     suspend fun releaseCard(cardId: Long, customerId: Long)
     suspend fun blockCard(cardId: Long)
-    fun findAll(limit: Int?, offset: Int?): Flow<CardDto>
-    fun findFreeCards(limit: Int?, offset: Int?): Flow<FreeCardDto>
+    fun findAll(limit: Int? = 50, offset: Int? = 0): Flow<CardDto>
+    fun findFreeCards(limit: Int? = 50, offset: Int? = 0): Flow<FreeCardDto>
 }
