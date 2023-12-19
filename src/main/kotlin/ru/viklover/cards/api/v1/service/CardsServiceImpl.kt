@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 import ru.viklover.cards.contracts.v1.models.CardDto
 import ru.viklover.cards.contracts.v1.models.FreeCardDto
@@ -28,6 +29,7 @@ class CardsServiceImpl(
     private suspend fun findById(id: Long) =
         cardRepository.findById(id) ?: throw ItemNotFoundException.of(Card::class, id)
 
+    @Transactional
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun generateCardsAsync(range: Int) {
         GlobalScope.launch {
